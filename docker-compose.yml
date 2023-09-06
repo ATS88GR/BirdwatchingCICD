@@ -3,24 +3,41 @@ services:
   postgres_db:
     image: postgres:15
     container_name: postgres_db
-    env_file:
-      - .env
+    environment:
+      DATABASE_HOST: postgres_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+      POSTGRES_MULTIPLE_DATABASES: postgres_users,postgres_places
     volumes:
       - ./create-multiple-postgresql-databases.sh:/docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
+      - ./postgres_db:/data/postgres
     ports:
       - 5432:5432
     restart: unless-stopped
-  java-user-service:
-    image: docker.io/artsyom88/spring-boot-user-manager:0.0.1-SNAPSHOT
-    ports:
-      - 8080:8080
-    restart: always
-    depends_on:
-      - postgres_db
-  java-place-service:
-    image: docker.io/artsyom88/spring-boot-place-manager:0.0.1-SNAPSHOT
-    ports:
-       - 8081:8080
-    restart: always
-    depends_on:
-      - postgres_db
+#  java-user-service:
+#    image: docker.io/artsyom88/spring-boot-user-manager:0.0.1-SNAPSHOT
+#    environment:
+#      DATABASE_HOST: postgres_db
+#      DATABASE_PORT: 5432
+#      DATABASE_NAME: postgres_places
+#      DATABASE_USER: postgres
+#      DATABASE_PASSWORD: password
+#    ports:
+#      - 8080:8080
+#    restart: always
+#    depends_on:
+#      - postgres_db
+#  java-place-service:
+#    image: docker.io/artsyom88/spring-boot-place-manager:0.0.1-SNAPSHOT
+#    environment:
+#      DATABASE_HOST: postgres_db
+#      DATABASE_PORT: 5432
+#      DATABASE_NAME: postgres_places
+#      DATABASE_USER: postgres
+#      DATABASE_PASSWORD: password
+#    ports:
+#       - 8081:8080
+#    restart: always
+#    depends_on:
+#      - postgres_db

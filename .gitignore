@@ -1,4 +1,5 @@
 /.idea
+/postgres_db
 /target
 /logs
 *.iws
